@@ -19,7 +19,13 @@ jobs:
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        run: |
+          # ubuntu-latest 自带 Android SDK，直接用它，避免 setup-android
+          # 去装已废弃的 'tools' 包导致失败
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
+          ls "$ANDROID_SDK_ROOT" || true
+          "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --version || true
 
       - name: Write local.properties
         env:
