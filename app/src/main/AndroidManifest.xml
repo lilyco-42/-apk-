@@ -97,6 +97,18 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
+            android:name=".RouteMarketActivity"
+            android:exported="false"
+            android:label="路线社区"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".RechargeActivity"
+            android:exported="false"
+            android:label="充值积分"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/app_settings"

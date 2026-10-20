@@ -49,6 +49,8 @@ public class RouteActivity extends BaseActivity {
                 importLauncher.launch(new String[]{"*/*"}));
         findViewById(R.id.route_create_button).setOnClickListener(v ->
                 startActivity(new Intent(this, RouteCreateActivity.class)));
+        findViewById(R.id.route_market_button).setOnClickListener(v ->
+                startActivity(new Intent(this, RouteMarketActivity.class)));
         findViewById(R.id.route_retry_button).setOnClickListener(v -> viewModel.refresh());
         searchView = findViewById(R.id.route_search_view);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

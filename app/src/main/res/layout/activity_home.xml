@@ -13,6 +13,12 @@
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="6dp" android:text="@string/home_intro_detail"
             android:textColor="@color/textSecondary" android:textSize="14sp" />
+        <TextView android:id="@+id/tv_account_bar" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="14dp"
+            android:padding="12dp" android:text="未登录 · 点击登录"
+            android:background="@drawable/bg_cyber_card" android:clickable="true"
+            android:focusable="true" android:foreground="?attr/selectableItemBackground"
+            android:textColor="@color/colorPrimary" android:textSize="14sp" android:textStyle="bold" />
         <LinearLayout android:id="@+id/card_mock_status" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginTop="24dp"
             android:orientation="vertical" android:padding="18dp" android:minHeight="48dp"
@@ -66,6 +72,19 @@
                 android:textSize="20sp" android:textStyle="bold" />
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:layout_marginTop="6dp" android:text="@string/home_library_detail" android:textColor="@color/textSecondary" android:textSize="14sp" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/card_route_market" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:padding="20dp"
+            android:orientation="vertical" android:background="@drawable/bg_cyber_card"
+            android:clickable="true" android:focusable="true" android:foreground="?attr/selectableItemBackground">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="社区" android:textColor="@color/saberGold" android:textSize="12sp" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" android:text="路线社区"
+                android:textColor="@color/textPrimary" android:textSize="20sp" android:textStyle="bold" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" android:text="别人上传的打卡路线，用积分购买；也可以上传自己的路线赚积分。"
+                android:textColor="@color/textSecondary" android:textSize="14sp" />
         </LinearLayout>
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="12dp" android:text="@string/home_tools"

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/surfaceBackground" android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_market" android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" android:background="@color/surfaceBackground"
+        app:navigationIcon="?attr/homeAsUpIndicator" app:navigationIconTint="@color/textPrimary"
+        app:title="路线社区" app:titleTextColor="@color/textPrimary" />
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:paddingHorizontal="20dp"
+        android:paddingBottom="10dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/market_tab_all" style="@style/SaberGhostButton"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginEnd="5dp" android:text="全部" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/market_tab_mine" style="@style/SaberGhostButton"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginEnd="5dp" android:text="我的上传" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/market_tab_bought" style="@style/SaberGhostButton"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginStart="5dp" android:text="我买的" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/market_filter_row" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal"
+        android:paddingHorizontal="20dp" android:paddingBottom="8dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_pick_school" style="@style/SaberGhostButton"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginEnd="6dp" android:text="全部学校" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_pick_sort" style="@style/SaberGhostButton"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginStart="6dp" android:text="最新发布" />
+    </LinearLayout>
+
+    <TextView android:id="@+id/market_stat" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:paddingHorizontal="24dp"
+        android:paddingBottom="8dp" android:textColor="@color/textSecondary" android:textSize="13sp" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/market_loading" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:indeterminate="true"
+        android:visibility="invisible" app:indicatorColor="@color/colorPrimary" />
+
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView android:id="@+id/market_empty" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_gravity="center"
+            android:gravity="center" android:padding="28dp" android:lineSpacingExtra="8dp"
+            android:textColor="@color/textSecondary" android:textSize="15sp"
+            android:visibility="gone" />
+        <ListView android:id="@+id/market_list" android:layout_width="match_parent"
+            android:layout_height="match_parent" android:clipToPadding="false"
+            android:divider="@android:color/transparent" android:dividerHeight="12dp"
+            android:padding="20dp" />
+    </FrameLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp" android:paddingVertical="8dp"
+        android:background="@color/surfaceBackground" android:orientation="horizontal">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_upload_route" style="@style/SaberGhostButton"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginEnd="6dp" android:text="上传路线" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_market_refresh" style="@style/SaberGhostButton"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginStart="6dp" android:text="刷新" />
+    </LinearLayout>
+</LinearLayout>

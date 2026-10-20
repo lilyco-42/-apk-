@@ -133,8 +133,47 @@ public final class FileRouteRepository implements RouteRepository {
         if (!importedRoute.hasEnoughPoints()) {
             throw new IOException("Route must contain at least two points");
         }
+        // 列表显示的是 JSON 内部的 name，同一条路线导入两次会出现两条一模一样的条目，
+        // 用户无法区分。这里对重名的自动加 (2)、(3) 后缀。
+        String uniqueName = uniqueRouteName(importedRoute.getName(), routeFile.getName());
+        if (!uniqueName.equals(importedRoute.getName())) {
+            importedRoute = new RouteDefinition(
+                    importedRoute.getId(), uniqueName,
+                    importedRoute.getCreatedAt(), importedRoute.getUpdatedAt(),
+                    importedRoute.getPoints(), importedRoute.getFile(),
+                    importedRoute.getShareInfo());
+        }
         writeText(routeFile, encodeRoute(importedRoute));
         return importedRoute;
+    }
+
+    /** 在现有路线里找同名项，重名则返回「名字 (2)」这样的唯一名。 */
+    private String uniqueRouteName(String name, String selfFile) {
+        String base = name == null || name.trim().isEmpty() ? "未命名路线" : name.trim();
+        java.util.Set<String> existing = new java.util.HashSet<>();
+        File[] files = routeDirectory.listFiles((dir, n) -> n.endsWith(".json"));
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().equals(selfFile)) {
+                    continue;
+                }
+                try {
+                    existing.add(readRoute(file).getName());
+                } catch (IOException ignored) {
+                    // 读不出来的文件不参与重名判断
+                }
+            }
+        }
+        if (!existing.contains(base)) {
+            return base;
+        }
+        for (int i = 2; i < 1000; i++) {
+            String candidate = base + " (" + i + ")";
+            if (!existing.contains(candidate)) {
+                return candidate;
+            }
+        }
+        return base + " (" + System.currentTimeMillis() + ")";
     }
 
     @Override
@@ -194,11 +233,32 @@ public final class FileRouteRepository implements RouteRepository {
     }
 
     private File newRouteFile(String safeName) throws IOException {
-        File preferred = new File(routeDirectory, safeName + ".route.json");
+        // 用户选的文件名往往已经带 .json / .route.json，
+        // 不剥掉就会出现「xxx.route.json.route.json」这种双后缀。
+        String base = stripRouteExtension(safeName);
+        File preferred = new File(routeDirectory, base + ".route.json");
         if (!preferred.exists()) {
             return resolveRouteFile(preferred.getName());
         }
-        return resolveRouteFile(safeName + "_" + UUID.randomUUID() + ".route.json");
+        return resolveRouteFile(base + "_" + UUID.randomUUID() + ".route.json");
+    }
+
+    /** 去掉末尾的 .route.json / .json，可重复调用。 */
+    private static String stripRouteExtension(String name) {
+        String value = name == null ? "" : name.trim();
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            String lower = value.toLowerCase();
+            if (lower.endsWith(".route.json")) {
+                value = value.substring(0, value.length() - ".route.json".length());
+                changed = true;
+            } else if (lower.endsWith(".json")) {
+                value = value.substring(0, value.length() - ".json".length());
+                changed = true;
+            }
+        }
+        return value.isEmpty() ? "route" : value;
     }
 
     private File resolveRouteFile(String routeId) throws IOException {

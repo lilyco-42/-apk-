@@ -52,4 +52,9 @@
             android:layout_height="wrap_content" android:layout_weight="1"
             android:layout_marginStart="6dp" android:text="@string/home_create_action" />
     </LinearLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/route_market_button" style="@style/SaberGhostButton"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp" android:layout_marginBottom="10dp"
+        android:text="路线社区 · 积分购买路线" />
 </LinearLayout>

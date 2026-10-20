@@ -1,6 +1,10 @@
 package com.acooldog.toolbox;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.res.Configuration;
+
+import androidx.annotation.NonNull;
 
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.CoordType;
@@ -25,8 +29,21 @@ public class GoApplication extends Application {
     private static final long MAX_TIME = 1000 * 60 * 60 * 24 * 3; // 3 days
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(AppLocale.wrap(base));
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // 系统切语言时不跟随，保持中文
+        AppLocale.applyTo(getResources());
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
+        AppLocale.applyTo(getResources());
 
         initXlog();
 
