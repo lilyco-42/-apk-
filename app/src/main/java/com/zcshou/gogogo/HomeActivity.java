@@ -373,7 +373,7 @@ public class HomeActivity extends BaseActivity {
                 : "畅跑卡：未开通（每次模拟扣 "
                   + com.acooldog.toolbox.config.WebPointsManager.COST_PER_RUN + " 积分）";
 
-        String[] items = {"畅跑卡 / 开通", "充值积分（站内）", "卡密兑换", "刷新积分与权益", "退出登录"};
+        String[] items = {"畅跑卡 / 开通", "充值积分（站内）", "卡密兑换", "推荐好友 / 我的邀请码", "刷新积分与权益", "退出登录"};
         // MaterialAlertDialog 同时给 message 和 items 时，message 会把列表吞掉，
         // 所以状态信息并进标题，列表只放操作项。
         String title = user + " · 积分 " + balance
@@ -392,6 +392,9 @@ public class HomeActivity extends BaseActivity {
                             showCardActivationDialog();
                             break;
                         case 3:
+                            openReferral();
+                            break;
+                        case 4:
                             checkCardLicense();
                             syncEntitlement();
                             GoUtils.DisplayToast(this, "正在刷新");
@@ -404,6 +407,13 @@ public class HomeActivity extends BaseActivity {
                     }
                 })
                 .show();
+    }
+
+    /** 打开推荐分成页（站内 WebView）。 */
+    private void openReferral() {
+        android.content.Intent i = new android.content.Intent(this, RechargeActivity.class);
+        i.putExtra("url", "https://lain42.top/referral.html");
+        startActivity(i);
     }
 
     /** 畅跑卡购买/状态弹窗。 */
@@ -549,6 +559,13 @@ public class HomeActivity extends BaseActivity {
         emailInput.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         box.addView(emailInput);
 
+        final android.widget.EditText refInput = new android.widget.EditText(this);
+        refInput.setHint("邀请码（可选，填了对方拿分成）");
+        refInput.setSingleLine(true);
+        refInput.setInputType(android.text.InputType.TYPE_CLASS_TEXT
+                | android.text.InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+        box.addView(refInput);
+
         android.widget.TextView hint = new android.widget.TextView(this);
         hint.setText("注册即送 25 积分，可直接用来跑路线。");
         hint.setTextSize(12);
@@ -585,14 +602,14 @@ public class HomeActivity extends BaseActivity {
                         showRegisterDialog();
                         return;
                     }
-                    doRegister(u, p, mail);
+                    doRegister(u, p, mail, refInput.getText().toString().trim());
                 })
                 .setNegativeButton("返回登录", (dialog, which) -> showLoginDialog())
                 .show();
     }
 
-    private void doRegister(String username, String password, String email) {
-        com.acooldog.toolbox.config.WebPointsManager.register(this, username, password, email,
+    private void doRegister(String username, String password, String email, String ref) {
+        com.acooldog.toolbox.config.WebPointsManager.register(this, username, password, email, ref,
                 new okhttp3.Callback() {
                     @Override
                     public void onFailure(@NonNull okhttp3.Call call, @NonNull java.io.IOException e) {

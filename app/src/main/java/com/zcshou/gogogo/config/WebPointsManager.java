@@ -232,11 +232,22 @@ public final class WebPointsManager {
     }
 
     public static void register(Context c, String username, String password, String email, Callback cb) {
+        register(c, username, password, email, "", cb);
+    }
+
+    /** 带邀请码注册。 */
+    public static void register(Context c, String username, String password, String email,
+                                String ref, Callback cb) {
         JSONObject json = new JSONObject();
         try {
             json.put("username", username);
             json.put("password", password);
-            json.put("email", email == null ? "" : email);
+            if (email != null && !email.isEmpty()) {
+                json.put("email", email);
+            }
+            if (ref != null && !ref.isEmpty()) {
+                json.put("ref", ref);
+            }
         } catch (Exception ignored) {
         }
         send(c, "/register", "POST", json, cb);

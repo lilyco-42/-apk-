@@ -110,6 +110,16 @@ public class RechargeActivity extends BaseActivity {
                 progress.setVisibility(newProgress >= 100 ? View.GONE : View.VISIBLE);
                 progress.setProgress(newProgress);
             }
+
+            @Override
+            public void onReceivedTitle(WebView view, String pageTitle) {
+                TextView t = findViewById(R.id.recharge_title);
+                if (t != null && pageTitle != null && !pageTitle.isEmpty()) {
+                    // 站点标题形如「推荐好友 · lain42.top」，只取前半段
+                    String short_ = pageTitle.split("·")[0].trim();
+                    t.setText(short_.isEmpty() ? "充值积分" : short_);
+                }
+            }
         });
 
         webView.loadUrl(getIntent().getStringExtra("url") != null
