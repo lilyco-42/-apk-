@@ -45,7 +45,9 @@ public class HomeActivity extends BaseActivity {
 
         ioExecutor = Executors.newSingleThreadExecutor();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        okHttpClient = new OkHttpClient();
+        okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(com.acooldog.toolbox.config.HttpUserAgent.get())
+                .build();
 
         findViewById(R.id.card_route_create).setOnClickListener(v -> open(RouteCreateActivity.class));
         findViewById(R.id.card_route_run).setOnClickListener(v -> startRunWithPoints());
@@ -293,7 +295,7 @@ public class HomeActivity extends BaseActivity {
             public void onResponse(@NonNull okhttp3.Call call, @NonNull okhttp3.Response response) throws java.io.IOException {
                 String raw = response.body().string();
                 com.acooldog.toolbox.config.WebPointsManager.Result r =
-                        com.acooldog.toolbox.config.WebPointsManager.parse(raw);
+                        com.acooldog.toolbox.config.WebPointsManager.parse(raw, response.code());
                 if (r.ok) {
                     com.acooldog.toolbox.config.WebPointsManager.saveBalance(HomeActivity.this, r.balance);
                 } else if (response.code() == 401) {
@@ -623,7 +625,7 @@ public class HomeActivity extends BaseActivity {
                     public void onResponse(@NonNull okhttp3.Call call, @NonNull okhttp3.Response response) throws java.io.IOException {
                         String raw = response.body().string();
                         com.acooldog.toolbox.config.WebPointsManager.Result r =
-                                com.acooldog.toolbox.config.WebPointsManager.parse(raw);
+                                com.acooldog.toolbox.config.WebPointsManager.parse(raw, response.code());
                         if (r.ok && !r.token.isEmpty()) {
                             // 注册接口直接返回 token，等于注册即登录
                             com.acooldog.toolbox.config.WebPointsManager.saveSession(
@@ -645,7 +647,7 @@ public class HomeActivity extends BaseActivity {
                                         public void onResponse(@NonNull okhttp3.Call c2, @NonNull okhttp3.Response resp2) throws java.io.IOException {
                                             com.acooldog.toolbox.config.WebPointsManager.Result me =
                                                     com.acooldog.toolbox.config.WebPointsManager.parse(
-                                                            resp2.body().string());
+                                                            resp2.body().string(), resp2.code());
                                             if (me.ok) {
                                                 runOnUiThread(() -> {
                                                     com.acooldog.toolbox.config.WebPointsManager
@@ -680,7 +682,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onResponse(@NonNull okhttp3.Call call, @NonNull okhttp3.Response response) throws java.io.IOException {
                 com.acooldog.toolbox.config.WebPointsManager.Result r =
-                        com.acooldog.toolbox.config.WebPointsManager.parse(response.body().string());
+                        com.acooldog.toolbox.config.WebPointsManager.parse(response.body().string(), response.code());
                 if (r.ok && !r.token.isEmpty()) {
                     com.acooldog.toolbox.config.WebPointsManager.saveSession(HomeActivity.this, r.token, r.username);
                     // 登录后立刻拉一次积分
@@ -696,7 +698,7 @@ public class HomeActivity extends BaseActivity {
                         @Override
                         public void onResponse(@NonNull okhttp3.Call c2, @NonNull okhttp3.Response resp2) throws java.io.IOException {
                             com.acooldog.toolbox.config.WebPointsManager.Result me =
-                                    com.acooldog.toolbox.config.WebPointsManager.parse(resp2.body().string());
+                                    com.acooldog.toolbox.config.WebPointsManager.parse(resp2.body().string(), resp2.code());
                             runOnUiThread(() -> {
                                 if (me.ok) {
                                     com.acooldog.toolbox.config.WebPointsManager.saveBalance(HomeActivity.this, me.balance);
@@ -751,7 +753,7 @@ public class HomeActivity extends BaseActivity {
             public void onResponse(@NonNull okhttp3.Call call, @NonNull okhttp3.Response response) throws java.io.IOException {
                 String raw = response.body().string();
                 com.acooldog.toolbox.config.WebPointsManager.Result r =
-                        com.acooldog.toolbox.config.WebPointsManager.parse(raw);
+                        com.acooldog.toolbox.config.WebPointsManager.parse(raw, response.code());
                 if (r.ok) {
                     com.acooldog.toolbox.config.WebPointsManager.saveBalance(HomeActivity.this, r.balance);
                     runOnUiThread(() -> {
@@ -845,7 +847,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onResponse(@NonNull okhttp3.Call call, @NonNull okhttp3.Response response) throws java.io.IOException {
                 com.acooldog.toolbox.config.WebPointsManager.Result r =
-                        com.acooldog.toolbox.config.WebPointsManager.parse(response.body().string());
+                        com.acooldog.toolbox.config.WebPointsManager.parse(response.body().string(), response.code());
                 runOnUiThread(() -> {
                     if (r.ok) {
                         GoUtils.DisplayToast(HomeActivity.this, "兑换成功");
@@ -860,3 +862,4 @@ public class HomeActivity extends BaseActivity {
         });
     }
 }
+

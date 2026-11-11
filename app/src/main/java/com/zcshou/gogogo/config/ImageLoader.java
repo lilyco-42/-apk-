@@ -25,6 +25,7 @@ import okhttp3.Response;
 public final class ImageLoader {
 
     private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
+            .addInterceptor(HttpUserAgent.get())
             .connectTimeout(12, java.util.concurrent.TimeUnit.SECONDS)
             .readTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
             .build();

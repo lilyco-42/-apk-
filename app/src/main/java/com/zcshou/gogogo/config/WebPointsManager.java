@@ -53,6 +53,7 @@ public final class WebPointsManager {
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
+            .addInterceptor(HttpUserAgent.get())
             .connectTimeout(12, java.util.concurrent.TimeUnit.SECONDS)
             .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
             .build();
@@ -288,7 +289,19 @@ public final class WebPointsManager {
     /* ---------------- 解析 ---------------- */
 
     public static Result parse(@NonNull String raw) {
+        return parse(raw, 0);
+    }
+
+    /**
+     * 解析响应体，并带上 HTTP 状态码。
+     *
+     * <p>状态码不是给业务逻辑用的，只是为了在解析失败时能说清楚到底发生了什么：
+     * 网关拦截（403 + 纯文本）和真正的「密码错了」（401 + JSON）必须能区分开，
+     * 否则用户只会看到笼统的「服务器返回数据解析失败」。</p>
+     */
+    public static Result parse(@NonNull String raw, int httpCode) {
         Result r = new Result();
+        r.httpCode = httpCode;
         try {
             JSONObject o = new JSONObject(raw);
             r.ok = o.optBoolean("ok", false);
@@ -310,13 +323,31 @@ public final class WebPointsManager {
             }
         } catch (Exception e) {
             r.ok = false;
-            r.message = "服务器返回数据解析失败";
+            r.message = describeBadBody(httpCode, raw);
         }
         return r;
     }
 
+    /** 生成可诊断的失败提示：状态码 + 响应体片段，避免把 403 说成「解析失败」。 */
+    private static String describeBadBody(int httpCode, String raw) {
+        StringBuilder sb = new StringBuilder("服务器返回数据解析失败");
+        if (httpCode > 0) {
+            sb.append("（HTTP ").append(httpCode).append("）");
+        }
+        String snippet = raw == null ? "" : raw.replaceAll("\\s+", " ").trim();
+        if (snippet.length() > 120) {
+            snippet = snippet.substring(0, 120) + "…";
+        }
+        if (!snippet.isEmpty()) {
+            sb.append("：").append(snippet);
+        }
+        return sb.toString();
+    }
+
     public static final class Result {
         public boolean ok;
+        /** 响应 HTTP 状态码，0 表示未知（离线解析等）。 */
+        public int httpCode;
         public String token = "";
         public String username = "";
         public String message = "";

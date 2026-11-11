@@ -13,9 +13,15 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public final class GiteeReleaseChecker {
-    private static final String GITHUB_RELEASE_API = "https://api.github.com/repos/caixukun-1-23/-apk-/releases/latest";
-    private static final String FALLBACK_MANIFEST_URL = "https://raw.githubusercontent.com/caixukun-1-23/-apk-/main/update.json";
-    private static final String GITHUB_RELEASES_PAGE = "https://github.com/caixukun-1-23/-apk-/releases";
+    /**
+     * 更新通道指向 fork 自己的仓库。
+     *
+     * <p>原上游仓库（caixukun-1-23）发的是另一个签名的包，覆盖安装会失败，
+     * 而且这里的新功能（账号、积分、路线社区）上游根本没有。</p>
+     */
+    private static final String GITHUB_RELEASE_API = "https://api.github.com/repos/lilyco-42/-apk-/releases/latest";
+    private static final String FALLBACK_MANIFEST_URL = "https://raw.githubusercontent.com/lilyco-42/-apk-/main/update.json";
+    private static final String GITHUB_RELEASES_PAGE = "https://github.com/lilyco-42/-apk-/releases";
     private static final String TRUSTED_DOWNLOAD_PREFIX = GITHUB_RELEASES_PAGE + "/";
 
     private final OkHttpClient okHttpClient;
@@ -53,7 +59,7 @@ public final class GiteeReleaseChecker {
         Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", accept)
-                .header("User-Agent", "PaDouBuPao")
+                .header("User-Agent", com.acooldog.toolbox.config.HttpUserAgent.VALUE)
                 .get()
                 .build();
 

@@ -21,7 +21,7 @@ public class GiteeReleaseCheckerTest {
     public void parsesFallbackManifest() throws Exception {
         GiteeReleaseInfo release = GiteeReleaseChecker.parseFallbackManifest(
                 "{\"version\":\"v2.4.1\",\"name\":\"release\",\"body\":\"notes\"," +
-                        "\"download_url\":\"https://github.com/caixukun-1-23/-apk-/releases/latest/download/app.apk\"}"
+                        "\"download_url\":\"https://github.com/lilyco-42/-apk-/releases/latest/download/app.apk\"}"
         );
 
         assertEquals("v2.4.1", release.getTagName());
@@ -42,6 +42,6 @@ public class GiteeReleaseCheckerTest {
                         "\"name\":\"app.apk\",\"browser_download_url\":\"https://example.com/app.apk\"}]}"
         );
 
-        assertEquals("https://github.com/caixukun-1-23/-apk-/releases", release.getDownloadUrl());
+        assertEquals("https://github.com/lilyco-42/-apk-/releases", release.getDownloadUrl());
     }
 }

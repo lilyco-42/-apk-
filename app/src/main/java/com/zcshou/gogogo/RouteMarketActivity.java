@@ -798,7 +798,7 @@ public class RouteMarketActivity extends BaseActivity {
                     loadSchools();
                     reload();
                 } catch (Exception e) {
-                    toast("登录失败：解析异常");
+                    toast("登录失败：" + snippet(body));
                 }
             }
 
@@ -830,7 +830,7 @@ public class RouteMarketActivity extends BaseActivity {
                     loadSchools();
                     reload();
                 } catch (Exception e) {
-                    toast("注册失败：解析异常");
+                    toast("注册失败：" + snippet(body));
                 }
             }
 
@@ -944,6 +944,29 @@ public class RouteMarketActivity extends BaseActivity {
         }
     }
 
+    /** 响应体片段，用来在解析不出 JSON 时说清楚服务端到底回了什么。 */
+    private static String snippet(String body) {
+        String s = body == null ? "" : body.replaceAll("\\s+", " ").trim();
+        if (s.isEmpty()) {
+            return "服务器返回了空响应";
+        }
+        return s.length() > 80 ? (s.substring(0, 80) + "…") : s;
+    }
+
+    /**
+     * 失败提示：优先用服务端 JSON 里的 detail，其次是 body 片段。
+     *
+     * <p>网关拦截（例如反爬规则命中 UA）返回的是纯文本，{@code errorOf} 解析不出来，
+     * 只显示「HTTP 403」会让人以为是自己账号的问题，所以把 body 片段一起带上。</p>
+     */
+    private static String failureText(int code, String body) {
+        String detail = RouteMarketClient.errorOf(body);
+        if (!detail.isEmpty()) {
+            return detail;
+        }
+        return "HTTP " + code + "：" + snippet(body);
+    }
+
     /** 只关心成功 body / 失败提示的回调，统一切回主线程。 */
     private abstract class SimpleCallback implements Callback {
         private final android.os.Handler main =
@@ -972,7 +995,7 @@ public class RouteMarketActivity extends BaseActivity {
             final boolean ok = response.isSuccessful();
             final String text = body;
             final int code = response.code();
-            final String err = ok ? "" : RouteMarketClient.errorOf(body);
+            final String err = ok ? "" : failureText(code, body);
             main.post(() -> {
                 if (isFinishing()) {
                     return;
@@ -980,7 +1003,7 @@ public class RouteMarketActivity extends BaseActivity {
                 if (ok) {
                     onBody(text);
                 } else {
-                    onFail(err.isEmpty() ? ("HTTP " + code) : err);
+                    onFail(err);
                 }
             });
         }

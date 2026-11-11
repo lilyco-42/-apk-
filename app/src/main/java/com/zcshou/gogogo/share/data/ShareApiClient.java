@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.acooldog.toolbox.BuildConfig;
+import com.acooldog.toolbox.config.HttpUserAgent;
 import com.acooldog.toolbox.nfc.domain.NfcPayload;
 import com.acooldog.toolbox.route.domain.model.RouteSimulationConfig;
 import com.acooldog.toolbox.route.data.RoutePointJsonCodec;
@@ -51,6 +52,7 @@ public final class ShareApiClient {
 
     ShareApiClient(String configuredBaseUrl) throws IOException {
         okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(HttpUserAgent.get())
                 .connectTimeout(15L, TimeUnit.SECONDS)
                 .readTimeout(20L, TimeUnit.SECONDS)
                 .writeTimeout(20L, TimeUnit.SECONDS)

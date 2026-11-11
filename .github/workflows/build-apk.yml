@@ -65,9 +65,32 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease --stacktrace
 
+      # 产物名带中文（跑都不跑_vX.Y.Z_...apk），下载链接里不好用，
+      # 统一复制成 ASCII 名再发布，update.json 里的 download_url 依赖这个名字。
+      - name: Normalize APK name
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/release/*.apk dist/PaDouBuPao_arm64-v8a_release.apk
+          ls -l dist
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: apk-release
-          path: app/build/outputs/apk/release/*.apk
+          path: dist/*.apk
           if-no-files-found: error
+
+      # 推 v* 标签时把签名包直接发到 Release：
+      # App 内置更新检查（GiteeReleaseChecker）读的是 releases/latest，
+      # 只上传 artifact 的话普通用户拿不到下载链接。
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.apk
+          name: 跑都不跑 ${{ github.ref_name }}
+          body_path: update.json
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

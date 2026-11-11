@@ -1,6 +1,6 @@
 {
-  "version": "v2.4.1",
-  "name": "跑都不跑 v2.4.1",
-  "body": "修复 GitHub 匿名 API 限流时无法检查更新的问题；保留 v2.4.0 的界面、路线存储、导入导出与性能改进。",
-  "download_url": "https://github.com/caixukun-1-23/-apk-/releases/latest/download/PaDouBuPao_arm64-v8a_release.apk"
+  "version": "v2.4.2",
+  "name": "跑都不跑 v2.4.2",
+  "body": "修复登录/注册提示「服务器返回数据解析失败」：App 内所有自建 OkHttpClient 统一发送 PaDouBuPao 标识（此前默认 okhttp UA 被网关反爬规则拦成 403），失败提示同时给出 HTTP 状态码与服务端返回片段。更新检查改从本仓库获取。",
+  "download_url": "https://github.com/lilyco-42/-apk-/releases/latest/download/PaDouBuPao_arm64-v8a_release.apk"
 }
